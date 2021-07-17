@@ -113,10 +113,11 @@ sudo calicoctl create -f 02-bgp-peer.yml
 sudo calicoctl get node -o wide
 ```
 
+---
 
 ## login bigip
 ```
-ssh root@10.42.0.11
+ssh root@10.42.0.11  (default password is "default")
 ```
 
 ## bigip license activate.

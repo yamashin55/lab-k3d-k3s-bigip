@@ -32,7 +32,7 @@ exit
 #https://github.com/F5Networks/f5-appsvcs-extension/releases/latest
 curl -LO https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.29.0/f5-appsvcs-3.29.0-3.noarch.rpm
 vi install-rpm.sh
----
+---------------------
 #!/bin/bash
 # how to use :
 # chmod +x install-rpm.sh
@@ -125,11 +125,17 @@ done
 echo "Installed $RPM_NAME on $TARGET"
 
 exit 0
----
+---------------------
+
 chmod +x install-rpm.sh
 ./install-rpm.sh 10.42.0.11 admin:admin ./f5-appsvcs-3.29.0-3.noarch.rpm 
 curl -ks -u admin:admin https://10.42.0.11/mgmt/shared/appsvcs/info |jq .
+```
 
+
+
+
+```
 ssh root@10.42.0.11
 imish
 enable

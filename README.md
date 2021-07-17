@@ -3,10 +3,12 @@
 ## Architecture
 ![Architecture](./images/architecture.jpg)  
 
+login bigip
 ```
 ssh root@10.42.0.11
 ```
 
+bigip license activate.
 ```
 tmsh modify auth password-policy policy-enforcement disabled
 tmsh modify auth password admin 
@@ -25,10 +27,8 @@ grep nw_routing_bgp bigip.license
 ```
 
 
+bigip setup.
 ```
-tmsh modify net route-domain 0 routing-protocol add { BGP } 
-tmsh create auth partition kubernetes
-exit
 #https://github.com/F5Networks/f5-appsvcs-extension/releases/latest
 curl -LO https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.29.0/f5-appsvcs-3.29.0-3.noarch.rpm
 vi install-rpm.sh
@@ -134,9 +134,11 @@ curl -ks -u admin:admin https://10.42.0.11/mgmt/shared/appsvcs/info |jq .
 
 
 
-
+BGP setup on bigip.
 ```
-ssh root@10.42.0.11
+tmsh modify net route-domain 0 routing-protocol add { BGP } 
+tmsh create auth partition kubernetes
+
 imish
 enable
 configure terminal
@@ -152,6 +154,19 @@ write
 end
 show running-config
 exit
+```
 
+
+on bigip
+```
 tmsh create net route ubuntu-k3d network 172.18.0.0/16 gw 10.42.0.10
+```
+
+on ubuntu
+```
+sudo ip route add 10.53.86.64/26 via 172.18.0.3
+sudo ip route add 10.53.68.192/26 via 172.18.0.4
+sudo ip route add 10.53.115.0/26 via 172.18.0.5
+sudo ip route add 10.53.194.192/26 via 172.18.0.2
+
 ```

@@ -1182,50 +1182,73 @@ https://github.com/F5Networks/k8s-bigip-ctlr/issues/1679
 https://clouddocs.f5.com/containers/latest/userguide/config-parameters.html#gtm-big-ip-system
 
 
-
-## 
+## Bigip setup 
 ```
-vi f5-demo-production-deployment.yaml 
+tmsh create gtm datacenter k8s-demo-dc
+tmsh create gtm server GSLBServer datacenter k8s-demo-dc devices replace-all-with  { bigip1 { addresses replace-all-with { 10.42.0.21 } } } link-discovery enabled virtual-server-discovery enabled
+```
+
+## Deployment
+```
+vi gtm-demo-production-deployment.yaml
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: f5-demo-production
-  name: f5-demo-production
+    app: gtm-demo-production
+  name: gtm-demo-production
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: f5-demo-production
+      app: gtm-demo-production
   template:
     metadata:
       labels:
-        app: f5-demo-production
+        app: gtm-demo-production
     spec:
       containers:
       - env:
         - name: service_name
-          value: f5-demo-production
+          value: gtm-demo-production
         image: nginxdemos/nginx-hello 
         imagePullPolicy: Always
-        name: f5-demo-production
+        name: gtm-demo-production
         ports:
-        - containerPort: 80
+        - containerPort: 8080
           protocol: TCP
 ```
 
+
 ```
-vi virtualserver.yaml
----
+vi gtm-demo-production-service.yaml 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: gtm-demo-production-service
+spec:
+  selector:
+    app: gtm-demo-production
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+```
+
+
+```
+vi gtm-demo-production-virtualserver.yaml 
+
 apiVersion: "cis.f5.com/v1"
 kind: VirtualServer
 metadata:
-  name: f5-demo-myapp
+  name: gtm-demo-app
   labels:
     f5cr: "true"
 spec:
-  host: myapp.f5demo.com
+  host: gtm.f5demo.com
   ipamLabel: Production
   pools:
   - monitor:
@@ -1235,12 +1258,12 @@ spec:
       timeout: 31
       type: http
     path: /
-    service: f5-demo-production
+    service: gtm-demo-production-service
     servicePort: 8080
 ```
 
 ```
-vi externaldns.yaml 
+vi gtm-demo-production-externaldns.yaml 
 
 apiVersion: "cis.f5.com/v1"
 kind: ExternalDNS
@@ -1249,25 +1272,20 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  domainName: myapp.f5demo.com
+  domainName: gtm.f5demo.com
   dnsRecordType: A
   loadBalanceMethod: round-robin
   pools:
-  - name: myapp.f5demo.com
+  - name: gtm.f5demo.com
     dnsRecordType: A
     loadBalanceMethod: round-robin
     dataServerName: /Common/GSLBServer
-    monitor:
-      type: http
-      send: "GET /"
-      recv: ""
-      interval: 10
-      timeout: 10
 ```
 
 
 ```
-kubectl apply -f f5-demo-production-deployment.yaml
-kubectl apply -f virtualserver.yaml
-kubectl apply -f externaldns.yaml
+kubectl apply -f gtm-demo-production-deployment.yaml
+kubectl apply -f gtm-demo-production-service.yaml 
+kubectl apply -f gtm-demo-production-virtualserver.yaml
+kubectl apply -f gtm-demo-production-externaldns.yaml
 ```

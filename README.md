@@ -824,6 +824,9 @@ kubectl create -f customresourcedefinitions.yaml
 ```
 
 
+# Install F5-IPAM Controller
+
+## IPAM RBAC
 ```
 vi f5-ipam-rbac.yaml
 
@@ -858,6 +861,7 @@ metadata:
   namespace: kube-system
 ```
 
+## IPAM CRD
 ```
 vi f5-ipam-schema.yaml
 ---
@@ -923,7 +927,7 @@ spec:
 ```
 
 
-
+## F5 IPAM Deployment
 ```
 vi f5-ipam-deployment.yaml
 
@@ -966,6 +970,8 @@ kubectl create -f f5-ipam-schema.yaml
 kubectl create -f f5-ipam-deployment.yaml
 ```
 
+---
+# TEST
 
 ## type: LoadBalancer
 ```

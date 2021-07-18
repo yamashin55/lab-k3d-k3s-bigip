@@ -108,8 +108,8 @@ spec:
   kubeconfig: "/home/ubuntu/.kube/config"
 --------------------------------------
 
-sudo calicoctl create -f 01-bgpconfig.yml
-sudo calicoctl create -f 02-bgp-peer.yml
+sudo calicoctl create -f bgp-config.yml
+sudo calicoctl create -f bgp-peer.yml
 sudo calicoctl get node -o wide
 ```
 

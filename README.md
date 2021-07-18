@@ -1166,3 +1166,102 @@ kubectl apply -f 02-tls-service.yaml
 kubectl apply -f 03-tls-profile.yaml
 kubectl apply -f 04-tls-virtualserver.yaml
 ```
+
+---
+# External DNS for GTM
+## Issue
+https://github.com/F5Networks/k8s-bigip-ctlr/issues/1679
+
+## GTM parameter must 
+```
+            - "--gtm-bigip-url=10.42.0.11"
+            - "--gtm-bigip-username=$(BIGIP_USERNAME)"
+            - "--gtm-bigip-password=$(BIGIP_PASSWORD)"
+
+```
+https://clouddocs.f5.com/containers/latest/userguide/config-parameters.html#gtm-big-ip-system
+
+
+
+## 
+```
+vi f5-demo-production-deployment.yaml 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: f5-demo-production
+  name: f5-demo-production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: f5-demo-production
+  template:
+    metadata:
+      labels:
+        app: f5-demo-production
+    spec:
+      containers:
+      - env:
+        - name: service_name
+          value: f5-demo-production
+        image: nginxdemos/nginx-hello 
+        imagePullPolicy: Always
+        name: f5-demo-production
+        ports:
+        - containerPort: 80
+          protocol: TCP
+```
+
+```
+vi virtualserver.yaml
+---
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: f5-demo-myapp
+  labels:
+    f5cr: "true"
+spec:
+  host: myapp.f5demo.com
+  ipamLabel: Production
+  pools:
+  - monitor:
+      interval: 20
+      recv: ""
+      send: /
+      timeout: 31
+      type: http
+    path: /
+    service: f5-demo-production
+    servicePort: 8080
+```
+
+```
+vi externaldns.yaml 
+
+apiVersion: "cis.f5.com/v1"
+kind: ExternalDNS
+metadata:
+  name: exdns
+  labels:
+    f5cr: "true"
+spec:
+  domainName: myapp.f5demo.com
+  dnsRecordType: A
+  loadBalanceMethod: round-robin
+  pools:
+  - name: myapp.f5demo.com
+    dnsRecordType: A
+    loadBalanceMethod: round-robin
+    dataServerName: /Common/GSLBServer
+    monitor:
+      type: http
+      send: "GET /"
+      recv: ""
+      interval: 10
+      timeout: 10
+```
+

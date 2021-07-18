@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: f5-demo-tls
+  name: f5-demo-tls
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: f5-demo-tls
+  template:
+    metadata:
+      labels:
+        app: f5-demo-tls
+    spec:
+      containers:
+      - env:
+        - name: service_name
+          value: f5-demo-tls
+        image: nginxdemos/nginx-hello
+        imagePullPolicy: Always
+        name: f5-demo-tls
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+

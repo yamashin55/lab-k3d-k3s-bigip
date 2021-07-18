@@ -1265,3 +1265,9 @@ spec:
       timeout: 10
 ```
 
+
+```
+kubectl apply -f f5-demo-production-deployment.yaml
+kubectl apply -f virtualserver.yaml
+kubectl apply -f externaldns.yaml
+```

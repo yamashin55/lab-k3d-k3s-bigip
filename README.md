@@ -39,7 +39,7 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 ```
 
-## Install Calico
+## Install calicoctl
 ```
 curl -O -L https://github.com/projectcalico/calicoctl/releases/download/v3.15.0/calicoctl
 chmod u+x calicoctl

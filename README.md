@@ -129,7 +129,6 @@ tmsh modify sys global-settings mgmt-dhcp disabled
 tmsh create sys management-ip 1.1.1.1/32 
 tmsh create net vlan internal interfaces add { 1.1 } 
 tmsh create net self 10.42.0.11/16 vlan internal allow-service default 
-tmsh create net route default 10.42.0.254
 tmsh create net route default gw 10.42.0.254 
 tmsh modify cli global-settings service number
 tmsh modify sys global-settings gui-setup disabled

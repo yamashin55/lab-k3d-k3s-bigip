@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gtm-demo-production
+  name: gtm-demo-production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gtm-demo-production
+  template:
+    metadata:
+      labels:
+        app: gtm-demo-production
+    spec:
+      containers:
+      - env:
+        - name: service_name
+          value: gtm-demo-production
+        image: nginxdemos/nginx-hello 
+        imagePullPolicy: Always
+        name: gtm-demo-production
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+

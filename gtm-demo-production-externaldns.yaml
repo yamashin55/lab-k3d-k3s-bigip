@@ -5,17 +5,11 @@ metadata:
   labels:
     f5cr: "true"
 spec:
-  domainName: example.com
+  domainName: gtm.f5demo.com
   dnsRecordType: A
   loadBalanceMethod: round-robin
   pools:
-  - name: example.site1.com
+  - name: gtm.f5demo.com
     dnsRecordType: A
     loadBalanceMethod: round-robin
     dataServerName: /Common/GSLBServer
-    monitor:
-      type: https
-      send: "GET /"
-      recv: ""
-      interval: 10
-      timeout: 10

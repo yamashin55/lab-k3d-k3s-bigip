@@ -1,0 +1,19 @@
+apiVersion: "cis.f5.com/v1"
+kind: VirtualServer
+metadata:
+  name: gtm-demo-app2
+  labels:
+    f5cr: "true"
+spec:
+  host: gtm2.f5demo.com
+  ipamLabel: Production
+  pools:
+  - monitor:
+      interval: 20
+      recv: ""
+      send: /
+      timeout: 31
+      type: http
+    path: /
+    service: gtm-demo-production-service
+    servicePort: 8080

@@ -340,6 +340,9 @@ spec:
             - "--as3-validation=true"
             - "--log-as3-response=true"
             - "--ipam=true"
+            - "--gtm-bigip-url=10.42.0.11"
+            - "--gtm-bigip-username=$(BIGIP_USERNAME)"
+            - "--gtm-bigip-password=$(BIGIP_PASSWORD)"
           command: 
             - /app/bin/k8s-bigip-ctlr
           env: 
